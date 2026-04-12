@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LocadoraVeiculosTP1.Data;
 using LocadoraVeiculosTP1.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LocadoraVeiculosTP1.Controllers
 {
@@ -19,20 +17,26 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Categoria>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
         {
             return await _context.Categorias.ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Categoria), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
         {
             var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria == null) return NotFound();
+            if (categoria == null) return NotFound("Categoria não encontrada.");
             return categoria;
         }
 
         [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(Categoria), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
         {
             _context.Categorias.Add(categoria);
@@ -41,19 +45,24 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpPut("{id}")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutCategoria(int id, Categoria categoria)
         {
-            if (id != categoria.Id) return BadRequest();
+            if (id != categoria.Id) return BadRequest("ID incompatível.");
             _context.Entry(categoria).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteCategoria(int id)
         {
             var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria == null) return NotFound();
+            if (categoria == null) return NotFound("Categoria não encontrada.");
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
             return NoContent();
