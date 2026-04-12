@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LocadoraVeiculosTP1.Data;
 using LocadoraVeiculosTP1.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LocadoraVeiculosTP1.Controllers
 {
@@ -19,20 +17,26 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Aluguel>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Aluguel>>> GetAlugueis()
         {
             return await _context.Alugueis.Include(a => a.Cliente).Include(a => a.Veiculo).ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Aluguel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Aluguel>> GetAluguel(int id)
         {
             var aluguel = await _context.Alugueis.FindAsync(id);
-            if (aluguel == null) return NotFound();
+            if (aluguel == null) return NotFound("Aluguel não encontrado.");
             return aluguel;
         }
 
         [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(Aluguel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Aluguel>> PostAluguel(Aluguel aluguel)
         {
             if (aluguel.DataDevolucao < aluguel.DataInicio)
@@ -44,19 +48,24 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpPut("{id}")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutAluguel(int id, Aluguel aluguel)
         {
-            if (id != aluguel.Id) return BadRequest();
+            if (id != aluguel.Id) return BadRequest("ID incompatível.");
             _context.Entry(aluguel).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAluguel(int id)
         {
             var aluguel = await _context.Alugueis.FindAsync(id);
-            if (aluguel == null) return NotFound();
+            if (aluguel == null) return NotFound("Aluguel não encontrado.");
             _context.Alugueis.Remove(aluguel);
             await _context.SaveChangesAsync();
             return NoContent();
