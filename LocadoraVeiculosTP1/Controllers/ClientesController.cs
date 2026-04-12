@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LocadoraVeiculosTP1.Data;
 using LocadoraVeiculosTP1.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LocadoraVeiculosTP1.Controllers
 {
@@ -19,12 +17,15 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Cliente>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
             return await _context.Clientes.ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Cliente), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
@@ -33,6 +34,9 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(Cliente), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
             if (string.IsNullOrWhiteSpace(cliente.Cpf))
@@ -44,6 +48,9 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpPut("{id}")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutCliente(int id, Cliente cliente)
         {
             if (id != cliente.Id) return BadRequest("ID incompatível.");
@@ -54,10 +61,12 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteCliente(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null) return NotFound();
+            if (cliente == null) return NotFound("Cliente não encontrado.");
 
             _context.Clientes.Remove(cliente);
             await _context.SaveChangesAsync();
