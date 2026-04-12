@@ -1,3 +1,5 @@
+using LocadoraVeiculosTP1.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LocadoraVeiculosTP1
 {
@@ -8,6 +10,10 @@ namespace LocadoraVeiculosTP1
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            // Configuração do Banco de Dados SQL Express
+            builder.Services.AddDbContext<LocadoraDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
