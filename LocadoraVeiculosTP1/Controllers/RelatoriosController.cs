@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LocadoraVeiculosTP1.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LocadoraVeiculosTP1.Controllers
 {
@@ -17,8 +16,8 @@ namespace LocadoraVeiculosTP1.Controllers
             _context = context;
         }
 
-        // Filtro 1: Inner Join simples (Veiculos e Fabricantes)
         [HttpGet("veiculos-com-marca")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetVeiculosMarcas()
         {
             var query = from v in _context.Veiculos
@@ -27,8 +26,8 @@ namespace LocadoraVeiculosTP1.Controllers
             return Ok(await query.ToListAsync());
         }
 
-        // Filtro 2: Inner Join Duplo (Alugueis e Clientes)
         [HttpGet("alugueis-por-cliente")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAlugueisClientes()
         {
             var query = from a in _context.Alugueis
@@ -37,8 +36,8 @@ namespace LocadoraVeiculosTP1.Controllers
             return Ok(await query.ToListAsync());
         }
 
-        // Filtro 3: Left Join (Todos os fabricantes e seus modelos, mesmo se não houver estoque)
         [HttpGet("estoque-fabricantes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetEstoque()
         {
             var query = from f in _context.Fabricantes
@@ -48,8 +47,8 @@ namespace LocadoraVeiculosTP1.Controllers
             return Ok(await query.ToListAsync());
         }
 
-        // Filtro 4: Inner Join Triplo (Aluguel, Veículo e Categoria)
         [HttpGet("alugueis-detalhado-categoria")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAlugueisCat()
         {
             var query = from a in _context.Alugueis
@@ -59,8 +58,8 @@ namespace LocadoraVeiculosTP1.Controllers
             return Ok(await query.ToListAsync());
         }
 
-        // Filtro 5: Join com Agrupamento (Faturamento total por cliente)
         [HttpGet("faturamento-total-clientes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFaturamento()
         {
             var query = from a in _context.Alugueis
