@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LocadoraVeiculosTP1.Data;
 using LocadoraVeiculosTP1.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LocadoraVeiculosTP1.Controllers
 {
@@ -19,23 +17,29 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Fabricante>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Fabricante>>> GetFabricantes()
         {
             return await _context.Fabricantes.ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Fabricante), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Fabricante>> GetFabricante(int id)
         {
             var fabricante = await _context.Fabricantes.FindAsync(id);
-            if (fabricante == null) return NotFound();
+            if (fabricante == null) return NotFound("Fabricante não encontrado.");
             return fabricante;
         }
 
         [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(Fabricante), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Fabricante>> PostFabricante(Fabricante fabricante)
         {
-            if (string.IsNullOrWhiteSpace(fabricante.Nome)) return BadRequest("Nome é obrigatório.");
+            if (string.IsNullOrWhiteSpace(fabricante.Nome)) return BadRequest("O Nome é obrigatório.");
 
             _context.Fabricantes.Add(fabricante);
             await _context.SaveChangesAsync();
@@ -43,19 +47,24 @@ namespace LocadoraVeiculosTP1.Controllers
         }
 
         [HttpPut("{id}")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutFabricante(int id, Fabricante fabricante)
         {
-            if (id != fabricante.Id) return BadRequest();
+            if (id != fabricante.Id) return BadRequest("ID incompatível.");
             _context.Entry(fabricante).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteFabricante(int id)
         {
             var fabricante = await _context.Fabricantes.FindAsync(id);
-            if (fabricante == null) return NotFound();
+            if (fabricante == null) return NotFound("Fabricante não encontrado.");
             _context.Fabricantes.Remove(fabricante);
             await _context.SaveChangesAsync();
             return NoContent();
