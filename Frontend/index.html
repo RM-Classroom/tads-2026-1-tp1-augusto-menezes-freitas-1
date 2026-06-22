@@ -19,6 +19,9 @@
                     <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-dashboard'); carregarRelatorios()">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-clientes'); carregarClientes()">Clientes</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-veiculos'); carregarVeiculos()">Veículos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-fabricantes'); carregarFabricantes()">Fabricantes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-categorias'); carregarCategorias()">Categorias</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-alugueis'); carregarAlugueis()">Aluguéis</a></li>
                 </ul>
             </div>
         </div>
@@ -92,6 +95,72 @@
             </table>
         </div>
 
+        <div id="tela-fabricantes" class="tela">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>Fabricantes</h2>
+                <button class="btn btn-primary" onclick="abrirModalFabricante()">Novo Fabricante</button>
+            </div>
+            <form id="filtroFabricantes" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="text" id="filtroNomeFabricante" class="form-control" placeholder="Filtrar por Nome">
+                </div>
+                <div class="col-md-5">
+                    <input type="number" id="filtroIdFabricante" class="form-control" placeholder="Filtrar por ID">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Nome</th><th>Ações</th></tr></thead>
+                <tbody id="tabela-fabricantes-body"></tbody>
+            </table>
+        </div>
+
+        <div id="tela-categorias" class="tela">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>Categorias</h2>
+                <button class="btn btn-primary" onclick="abrirModalCategoria()">Nova Categoria</button>
+            </div>
+            <form id="filtroCategorias" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="text" id="filtroNomeCategoria" class="form-control" placeholder="Filtrar por Nome">
+                </div>
+                <div class="col-md-5">
+                    <input type="number" step="0.01" id="filtroValorCategoria" class="form-control" placeholder="Filtrar por Valor Base">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Nome</th><th>Valor Base</th><th>Ações</th></tr></thead>
+                <tbody id="tabela-categorias-body"></tbody>
+            </table>
+        </div>
+
+        <div id="tela-alugueis" class="tela">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>Aluguéis</h2>
+                <button class="btn btn-primary" onclick="abrirModalAluguel()">Novo Aluguel</button>
+            </div>
+            <form id="filtroAlugueis" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="number" id="filtroClienteIdAluguel" class="form-control" placeholder="Filtrar por ID Cliente">
+                </div>
+                <div class="col-md-5">
+                    <input type="number" id="filtroVeiculoIdAluguel" class="form-control" placeholder="Filtrar por ID Veículo">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Cliente ID</th><th>Veículo ID</th><th>Início</th><th>Fim</th><th>Total</th><th>Ações</th></tr></thead>
+                <tbody id="tabela-alugueis-body"></tbody>
+            </table>
+        </div>
+
     </div>
 
     <div class="modal" id="modalCliente" tabindex="-1">
@@ -126,9 +195,71 @@
                         <input type="hidden" id="veiculoId">
                         <input type="text" id="veiculoModelo" class="form-control mb-2" placeholder="Modelo" required>
                         <input type="number" id="veiculoAno" class="form-control mb-2" placeholder="Ano" required>
-                        <input type="number" step="0.1" id="veiculoKm" class="form-control mb-2" placeholder="Quilometragem" required>
+                        <input type="number" step="0.01" id="veiculoKm" class="form-control mb-2" placeholder="Quilometragem" required>
                         <input type="number" id="veiculoFabId" class="form-control mb-2" placeholder="ID Fabricante" required>
                         <input type="number" id="veiculoCatId" class="form-control mb-3" placeholder="ID Categoria" required>
+                        <button type="submit" class="btn btn-success w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalFabricante" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Fabricante</h5>
+                    <button type="button" class="btn-close" onclick="fecharModal('modalFabricante')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formFabricante">
+                        <input type="hidden" id="fabricanteId">
+                        <input type="text" id="fabricanteNome" class="form-control mb-3" placeholder="Nome" required>
+                        <button type="submit" class="btn btn-success w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalCategoria" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Categoria</h5>
+                    <button type="button" class="btn-close" onclick="fecharModal('modalCategoria')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCategoria">
+                        <input type="hidden" id="categoriaId">
+                        <input type="text" id="categoriaNome" class="form-control mb-2" placeholder="Nome" required>
+                        <input type="number" step="0.01" id="categoriaValor" class="form-control mb-3" placeholder="Valor Base Diária" required>
+                        <button type="submit" class="btn btn-success w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAluguel" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aluguel</h5>
+                    <button type="button" class="btn-close" onclick="fecharModal('modalAluguel')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formAluguel">
+                        <input type="hidden" id="aluguelId">
+                        <input type="number" id="aluguelClienteId" class="form-control mb-2" placeholder="ID Cliente" required>
+                        <input type="number" id="aluguelVeiculoId" class="form-control mb-2" placeholder="ID Veículo" required>
+                        <input type="datetime-local" id="aluguelDataInicio" class="form-control mb-2" required>
+                        <input type="datetime-local" id="aluguelDataFim" class="form-control mb-2" required>
+                        <input type="number" step="0.01" id="aluguelKmInicial" class="form-control mb-2" placeholder="KM Inicial" required>
+                        <input type="number" step="0.01" id="aluguelKmFinal" class="form-control mb-2" placeholder="KM Final" required>
+                        <input type="number" step="0.01" id="aluguelValorDiaria" class="form-control mb-2" placeholder="Valor Diária" required>
+                        <input type="number" step="0.01" id="aluguelValorTotal" class="form-control mb-3" placeholder="Valor Total" required>
                         <button type="submit" class="btn btn-success w-100">Salvar</button>
                     </form>
                 </div>
