@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locadora TP1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .tela { display: none; }
+        #tela-dashboard { display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">Locadora TP1</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-dashboard'); carregarRelatorios()">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-clientes'); carregarClientes()">Clientes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('tela-veiculos'); carregarVeiculos()">Veículos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div id="tela-dashboard" class="tela">
+            <h2>Dashboard e Relatórios</h2>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Faturamento por Cliente</div>
+                        <div class="card-body">
+                            <ul id="listaFaturamento" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Estoque por Fabricante</div>
+                        <div class="card-body">
+                            <ul id="listaEstoque" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-clientes" class="tela">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>Clientes</h2>
+                <button class="btn btn-primary" onclick="abrirModalCliente()">Novo Cliente</button>
+            </div>
+            <form id="filtroClientes" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="text" id="filtroNomeCliente" class="form-control" placeholder="Filtrar por Nome">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" id="filtroCpfCliente" class="form-control" placeholder="Filtrar por CPF">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Nome</th><th>CPF</th><th>Email</th><th>Ações</th></tr></thead>
+                <tbody id="tabela-clientes-body"></tbody>
+            </table>
+        </div>
+
+        <div id="tela-veiculos" class="tela">
+            <div class="d-flex justify-content-between mb-3">
+                <h2>Veículos</h2>
+                <button class="btn btn-primary" onclick="abrirModalVeiculo()">Novo Veículo</button>
+            </div>
+            <form id="filtroVeiculos" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="text" id="filtroModeloVeiculo" class="form-control" placeholder="Filtrar por Modelo">
+                </div>
+                <div class="col-md-5">
+                    <input type="number" id="filtroAnoVeiculo" class="form-control" placeholder="Filtrar por Ano">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary w-100">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead><tr><th>ID</th><th>Modelo</th><th>Ano</th><th>KM</th><th>Ações</th></tr></thead>
+                <tbody id="tabela-veiculos-body"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="modal" id="modalCliente" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cliente</h5>
+                    <button type="button" class="btn-close" onclick="fecharModal('modalCliente')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCliente">
+                        <input type="hidden" id="clienteId">
+                        <input type="text" id="clienteNome" class="form-control mb-2" placeholder="Nome" required>
+                        <input type="text" id="clienteCpf" class="form-control mb-2" placeholder="CPF" required>
+                        <input type="email" id="clienteEmail" class="form-control mb-3" placeholder="Email" required>
+                        <button type="submit" class="btn btn-success w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalVeiculo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Veículo</h5>
+                    <button type="button" class="btn-close" onclick="fecharModal('modalVeiculo')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formVeiculo">
+                        <input type="hidden" id="veiculoId">
+                        <input type="text" id="veiculoModelo" class="form-control mb-2" placeholder="Modelo" required>
+                        <input type="number" id="veiculoAno" class="form-control mb-2" placeholder="Ano" required>
+                        <input type="number" step="0.1" id="veiculoKm" class="form-control mb-2" placeholder="Quilometragem" required>
+                        <input type="number" id="veiculoFabId" class="form-control mb-2" placeholder="ID Fabricante" required>
+                        <input type="number" id="veiculoCatId" class="form-control mb-3" placeholder="ID Categoria" required>
+                        <button type="submit" class="btn btn-success w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
