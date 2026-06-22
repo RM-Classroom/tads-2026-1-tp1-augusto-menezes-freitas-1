@@ -214,14 +214,23 @@ document.getElementById('formVeiculo').addEventListener('submit', async function
     const metodo = id ? 'PUT' : 'POST';
     const urlFinal = id ? `${baseUrl}/Veiculos/${id}` : `${baseUrl}/Veiculos`;
 
-    await fetch(urlFinal, {
-        method: metodo,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const resposta = await fetch(urlFinal, {
+            method: metodo,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-    fecharModal('modalVeiculo');
-    carregarVeiculos();
+        if (resposta.ok) {
+            fecharModal('modalVeiculo');
+            carregarVeiculos();
+        } else {
+            const erro = await resposta.text();
+            alert(`Falha ao salvar Veículo!\n\nVerifique se os IDs de Fabricante e Categoria existem no banco e se o Ano é válido.\n\nDetalhe do erro: ${erro}`);
+        }
+    } catch (erroDeRede) {
+        alert("Erro de conexão com a API.");
+    }
 });
 
 document.addEventListener('DOMContentLoaded', carregarRelatorios);
