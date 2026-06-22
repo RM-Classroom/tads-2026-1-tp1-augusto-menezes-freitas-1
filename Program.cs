@@ -11,7 +11,7 @@ namespace LocadoraVeiculosTP1
 
             // Add services to the container.
 
-            // Configuração do Banco de Dados SQL Express
+            // Configuraï¿½ï¿½o do Banco de Dados SQL Express
             builder.Services.AddDbContext<LocadoraDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -23,6 +23,14 @@ namespace LocadoraVeiculosTP1
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("PermitirTudo", policy =>
+                policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,6 +41,8 @@ namespace LocadoraVeiculosTP1
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("PermitirTudo");  
 
             app.UseAuthorization();
 
