@@ -1,0 +1,7 @@
+# Pastas de compilação do .NET
+bin/
+obj/
+
+# Arquivos de usuário do Visual Studio
+.vs/
+*.user
